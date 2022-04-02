@@ -4,17 +4,14 @@ def test_get_all_posts(client, post_keys):
     assert isinstance(response.json, list)
 
     for element in response.json:
-        if set(element.keys()) != set(post_keys):
-            assert False
+        assert set(element.keys()) == set(post_keys)
 
 
 def test_get_post(client, post_keys):
     response = client.get('/api/posts/1')
     assert response.status_code == 200
 
-    if set(response.json.keys()) != set(post_keys):
-        assert False
-
+    assert set(response.json.keys()) == set(post_keys)
 
 def test_get_post_by_wrong_id(client):
     response = client.get('/api/posts/1234')

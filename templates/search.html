@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>SKYPROGRAM search</title>
-  <link href="css/styles.min.css" rel="stylesheet">
+  <link href="{{ url_for('static', filename='css/styles.min.css') }}" rel="stylesheet">
 </head>
 
 <body>
@@ -25,10 +25,10 @@
   </header>
   <main class="container">
     <div class="search">
-      <form action="/search" class="search__form">
-        <input type="search" class="search__input">
+      <form action="/search/" class="search__form">
+        <input type="search" class="search__input" name="s">
       </form>
-      <p class="search__results">Найдено постов: {{ len_posts }}</p>
+      <p class="search__results">По запросу '{{ s }}' найдено постов: {{ posts | count }}</p>
     </div>
     <section class="items">
       {% for post in posts %}
@@ -44,7 +44,7 @@
         <a href="/templates/post.html" class="item__post-link">
           <img src="{{ post.pic }}" alt="" width="348" class="item__post-img">
         </a>
-        <p class="item__descr"><a href="/tag.html" class="item__tag">#{{ s|safe }}</a> {{ post.content[:25] }}...</p>
+        <p class="item__descr"><a href="/templates/tag.html" class="item__tag"></a>{{ post.content[:30] }}...</p>
         <div class="item__post-info">
           <div class="item__counter">
             <img src="/static/img/eye.png" alt="" class="item__counter-icon" width="26">
@@ -52,10 +52,15 @@
           </div>
         </div>
         <div class="item__post-bottom">
-          <a href="/posts/{{ post.pk }}" class="item__btn-more">Подробнее</a>
+          <a href="{{ url_for('main_bp.page_post', postid=post.pk) }}" class="item__btn-more">Подробнее</a>
           <button type="button" class="item__bookmark-btn">
             <img src="/static/img/bookmark.png" alt="" class="item__bookmark-icon" width="24">
           </button>
+        </div>
+        <div>
+        {% for tag in post.tags %}
+          <a href="{{ url_for('main_bp.page_posts_by_tag', tag=tag) }}" class="item__btn-more">{{ tag }}</a>
+        {% endfor %}
         </div>
       </div>
       {% endfor %}
